@@ -1,5 +1,3 @@
 # homebrew-tap
 
-```sh
-brew install shihyuho/tap/fx
-```
+https://docs.brew.sh/Formula-Cookbook
