@@ -1,3 +1,3 @@
-# fisher
+# tapper
 
-Fisher is a bot automatic release new Fish-Food
+Tapper is a bot automatic upgrade homebrew Formual
