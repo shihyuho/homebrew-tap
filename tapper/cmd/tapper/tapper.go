@@ -22,7 +22,7 @@ const (
 var (
 	author        = "softleader/homebrew-tap/tapper"
 	mail          = "supprt@softleader.com.tw"
-	msg           = fmt.Sprintf("version upgrade by %s", author)
+	msg           = "version upgrade by tapper-bot"
 	versionRegexp = regexp.MustCompile("(version )(.+)")
 )
 
