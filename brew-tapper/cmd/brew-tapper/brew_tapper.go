@@ -20,9 +20,9 @@ const (
 )
 
 var (
-	author        = "softleader/homebrew-tap/tapper"
+	author        = "softleader/homebrew-tap/brew-tapper"
 	mail          = "supprt@softleader.com.tw"
-	msg           = "version upgrade by tapper-bot"
+	msg           = "version upgrade by brew-tapper bot"
 	versionRegexp = regexp.MustCompile("(version )(.+)")
 )
 
@@ -57,9 +57,9 @@ func main() {
 		gh: &gh{},
 	}
 	cmd := &cobra.Command{
-		Use:   "fisher",
-		Short: "Fisher is a bot automatic update Fish-Food",
-		Long:  "Fisher is a bot automatic update Fish-Food",
+		Use:   "brew-tapper",
+		Short: "brew-tapper is a bot automatic upgrade Homebrew Formual",
+		Long:  "brew-tapper is a bot automatic upgrade Homebrew Formual",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c.gh.token = os.ExpandEnv(c.gh.token)
