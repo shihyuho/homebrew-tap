@@ -1,3 +1,3 @@
-# tapper
+# brew-tapper
 
-Tapper is a bot automatic upgrade homebrew Formual
+brew-tapper is a bot automatic upgrade Homebrew Formual

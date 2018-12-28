@@ -1,7 +1,7 @@
 DIST := $(CURDIR)/_dist
 BUILD := $(CURDIR)/_build
 REGISTRY := softleader
-BINARY = tapper
+BINARY = brew-tapper
 
 .PHONY: build
 build:
