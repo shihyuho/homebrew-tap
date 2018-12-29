@@ -26,26 +26,22 @@ var (
 	versionRegexp = regexp.MustCompile("(version )(.+)")
 )
 
-type fisherCmd struct {
+type tapperCmd struct {
 	gh   *gh
 	port string
 }
 
 type gh struct {
-	token, owner, repo string
+	owner, repo string
 }
 
 type formula struct {
 	name, version string
 }
 
-type sha struct {
-	darwin, linux, windows string
-}
-
-func (gh *gh) newTokenClient(ctx context.Context) *github.Client {
+func newTokenClient(ctx context.Context, token string) *github.Client {
 	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: gh.token},
+		&oauth2.Token{AccessToken: token},
 	)
 	tc := oauth2.NewClient(ctx, ts)
 	return github.NewClient(tc)
@@ -53,7 +49,7 @@ func (gh *gh) newTokenClient(ctx context.Context) *github.Client {
 
 func main() {
 	var verbose bool
-	c := fisherCmd{
+	c := tapperCmd{
 		gh: &gh{},
 	}
 	cmd := &cobra.Command{
@@ -62,7 +58,6 @@ func main() {
 		Long:  "brew-tapper is a bot automatic upgrade Homebrew Formual",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c.gh.token = os.ExpandEnv(c.gh.token)
 			c.gh.owner = os.ExpandEnv(c.gh.owner)
 			c.gh.repo = os.ExpandEnv(c.gh.repo)
 			c.port = os.ExpandEnv(c.port)
@@ -79,7 +74,6 @@ func main() {
 
 	f := cmd.Flags()
 	f.BoolVarP(&verbose, "verbose", "v", verbose, "enable verbose output")
-	f.StringVar(&c.gh.token, "token", "$GITHUB_TOKEN", "github access token. Overrides $GITHUB_TOKEN")
 	f.StringVar(&c.gh.owner, "owner", "$GITHUB_OWNER", "github owner. Overrides $GITHUB_OWNER")
 	f.StringVar(&c.gh.repo, "repo", "$GITHUB_REPO", "github repo. Overrides $GITHUB_REPO")
 	f.StringVar(&c.port, "port", "$PORT", "server port")
@@ -89,14 +83,14 @@ func main() {
 	}
 }
 
-func (cmd *fisherCmd) run() error {
+func (cmd *tapperCmd) run() error {
 	r := gin.Default()
-	r.PUT("/:formula", func(c *gin.Context) {
+	r.PUT("/:formula/:version", func(c *gin.Context) {
 		formula := &formula{
 			name:    c.Param("formula"),
-			version: c.Request.FormValue("version"),
+			version: c.Param("version"),
 		}
-		if err := upgradeFormula(cmd.gh, formula); err != nil {
+		if err := upgradeFormula(c.GetHeader("GITHUB_TOKEN"), cmd.gh, formula); err != nil {
 			c.String(http.StatusInternalServerError, err.Error())
 		} else {
 			c.Status(http.StatusOK)
@@ -107,9 +101,9 @@ func (cmd *fisherCmd) run() error {
 	return nil
 }
 
-func upgradeFormula(gh *gh, formula *formula) error {
+func upgradeFormula(token string, gh *gh, formula *formula) error {
 	ctx := context.Background()
-	client := gh.newTokenClient(ctx)
+	client := newTokenClient(ctx, token)
 	foodPath := fmt.Sprintf(rb, formula.name)
 	fileContent, _, _, err := client.Repositories.GetContents(ctx, gh.owner, gh.repo, foodPath, &github.RepositoryContentGetOptions{})
 	if err != nil {

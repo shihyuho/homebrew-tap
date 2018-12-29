@@ -10,7 +10,8 @@ import (
 func TestUpgradeFormula(t *testing.T) {
 	var found bool
 	gh := &gh{}
-	if gh.token, found = os.LookupEnv("GITHUB_TOKEN"); !found {
+	var token string
+	if token, found = os.LookupEnv("GITHUB_TOKEN"); !found {
 		t.SkipNow()
 	}
 	if gh.repo, found = os.LookupEnv("GITHUB_REPO"); !found {
@@ -23,7 +24,7 @@ func TestUpgradeFormula(t *testing.T) {
 		name:    "slctl",
 		version: "0.1.9",
 	}
-	if err := upgradeFormula(gh, formula); err != nil {
+	if err := upgradeFormula(token, gh, formula); err != nil {
 		t.Error(err)
 	}
 }
