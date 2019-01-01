@@ -104,8 +104,8 @@ func (cmd *tapperCmd) run() error {
 func upgradeFormula(token string, gh *gh, formula *formula) error {
 	ctx := context.Background()
 	client := newTokenClient(ctx, token)
-	foodPath := fmt.Sprintf(rb, formula.name)
-	fileContent, _, _, err := client.Repositories.GetContents(ctx, gh.owner, gh.repo, foodPath, &github.RepositoryContentGetOptions{})
+	filePath := fmt.Sprintf(rb, formula.name)
+	fileContent, _, _, err := client.Repositories.GetContents(ctx, gh.owner, gh.repo, filePath, &github.RepositoryContentGetOptions{})
 	if err != nil {
 		return err
 	}
@@ -127,11 +127,11 @@ func upgradeFormula(token string, gh *gh, formula *formula) error {
 	opt.SHA = fileContent.SHA
 	opt.Author = author
 	opt.Committer = author
-	_, _, err = client.Repositories.UpdateFile(ctx, gh.owner, gh.repo, foodPath, opt)
+	_, _, err = client.Repositories.UpdateFile(ctx, gh.owner, gh.repo, filePath, opt)
 	return err
 }
 
-func format(origin string, food *formula) (out string) {
-	out = versionRegexp.ReplaceAllString(origin, fmt.Sprintf("$1%q", food.version))
+func format(origin string, f *formula) (out string) {
+	out = versionRegexp.ReplaceAllString(origin, fmt.Sprintf("$1%q", f.version))
 	return
 }

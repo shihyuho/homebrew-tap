@@ -1,11 +1,17 @@
 class Slctl < Formula
   desc "Slctl is a command line interface for running commands against SoftLeader Services"
   homepage "https://github.com/softleader/slctl"
-  version "0.1.9"
-  url "https://github.com/softleader/homebrew-tap/releases/download/slctl/slctl-darwin-#{version}.tgz"
+  version "0.1.8"
   
-  depends_on "git"
+  if OS.mac?
+    url "https://github.com/softleader/slctl/releases/download/#{version}/slctl-darwin-#{version}.tgz"
+  elsif OS.linux?
+    url "https://github.com/softleader/slctl/releases/download/#{version}/slctl-linux-#{version}.tgz"
+  end
 
+  depends_on :arch => :x86_64
+  depends_on "git"
+  
   def install
     bin.install "slctl"
   end
