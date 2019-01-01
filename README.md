@@ -9,6 +9,6 @@ $ brew tap softleader/tap
 $ brew install <formula>
 ```
 
-Available packages:
+Available formulas:
 
 - slctl - [https://github.com/softleader/slctl](https://github.com/softleader/slctl)
