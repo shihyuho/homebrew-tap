@@ -1,7 +1,14 @@
 # homebrew-tap
 
-https://docs.brew.sh/Formula-Cookbook
+This is the repository for SoftLeader [Homebrew](https://brew.sh) packages, checkout [Linuxbrew](http://linuxbrew.sh/) if you are a linux user
 
-## Formulas
+To install a package:
 
-- [slctl](https://github.com/softleader/slctl) - `brew install softleader/tap/slctl`
+```sh
+$ brew tap softleader/tap
+$ brew install <formula>
+```
+
+Available packages:
+
+- slctl - [https://github.com/softleader/slctl](https://github.com/softleader/slctl)
