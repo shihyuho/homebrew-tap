@@ -10,7 +10,6 @@ class Slctl < Formula
   end
 
   depends_on :arch => :x86_64
-  depends_on "git"
   
   def install
     bin.install "slctl"
