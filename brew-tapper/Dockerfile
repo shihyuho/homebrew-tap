@@ -4,7 +4,6 @@ RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 
 WORKDIR /app
 COPY tapper-server .
-COPY tapper.tgz .
 COPY script/* ./script/
 
 ENV GIN_MODE=release

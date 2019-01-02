@@ -1,18 +1,20 @@
 BUILD := $(CURDIR)/_build
+DIST := $(CURDIR)/_dist
 REGISTRY := softleader
 
 .PHONY: build
 build:
 	mkdir -p $(BUILD)
-	cp Dockerfile $(BUILD)
-	cp -r script $(BUILD)
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(BUILD)/tapper -a -tags netgo ./cmd/tapper
-	tar -C $(BUILD) -zcvf $(BUILD)/tapper.tgz tapper
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(BUILD)/tapper-server -a -tags netgo ./cmd/tapper-server
-	docker build -t $(REGISTRY)/brew-tapper $(BUILD)
 
 .PHONY: dist
-dist: build
+dist:
+	mkdir -p $(DIST)
+	cp Dockerfile $(DIST)
+	cp -r script $(DIST)
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(DIST)/tapper-server -a -tags netgo ./cmd/tapper-server
+	docker build -t $(REGISTRY)/brew-tapper $(DIST)
 	docker push $(REGISTRY)/brew-tapper
 
 .PHONY: clean

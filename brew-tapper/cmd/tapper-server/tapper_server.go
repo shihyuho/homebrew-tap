@@ -64,9 +64,6 @@ func (cmd *tapperServerCmd) run() error {
 			c.String(http.StatusOK, string(sh))
 		}
 	})
-	r.GET("/tapper", func(c *gin.Context) {
-		c.File("tapper.tgz")
-	})
 	r.PUT("/:formula/:version", func(c *gin.Context) {
 		formula := &brew.Formula{
 			Name:    c.Param("formula"),
