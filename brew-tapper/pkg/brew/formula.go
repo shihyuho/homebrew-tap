@@ -1,7 +1,7 @@
 package brew
 
 type Formula struct {
-	Name, Version string
+	Name, Version, DarwinSha256, LinuxSha256 string
 }
 
 func (f *Formula) NotSpecified() bool {

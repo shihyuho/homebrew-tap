@@ -6,6 +6,7 @@ import (
 	"github.com/softleader/homebrew-tap/tapper/pkg/gh"
 	"github.com/spf13/cobra"
 	"os"
+	"path/filepath"
 )
 
 type tapperCmd struct {
@@ -54,7 +55,11 @@ func main() {
 
 func (cmd *tapperCmd) run() error {
 	if cmd.formula.NotSpecified() {
-		if err := cmd.formula.Guess(cmd.dist); err != nil {
+		dist, err := filepath.Abs(cmd.dist)
+		if err != nil {
+			return nil
+		}
+		if err := cmd.formula.Guess(dist); err != nil {
 			return err
 		}
 	}

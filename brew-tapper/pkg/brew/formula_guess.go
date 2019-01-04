@@ -1,10 +1,15 @@
 package brew
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"github.com/Masterminds/semver"
 	"github.com/sirupsen/logrus"
+	"io"
 	"io/ioutil"
+	"log"
+	"os"
 	"path/filepath"
 	"strings"
 )
@@ -62,23 +67,31 @@ func (f *Formula) Guess(path string) error {
 	if err != nil {
 		return err
 	}
-
 	for _, file := range files {
 		if file.IsDir() || !isSupportedArchive(file.Name()) {
 			continue
 		}
-		bestGuess, err := guess(filepath.Base(file.Name()))
+		guessOs, guessName, guessVersion, err := guess(filepath.Base(file.Name()))
 		if err != nil {
 			logrus.Debugln(err)
 			continue
 		}
 		if len(f.Name) == 0 {
-			f.Name = bestGuess.Name
+			f.Name = guessName
 		}
 		if len(f.Version) == 0 {
-			f.Version = bestGuess.Version
+			f.Version = guessVersion
 		}
-		return nil
+		if len(f.LinuxSha256) == 0 && guessOs == "linux" {
+			if f.LinuxSha256, err = hash(filepath.Join(path, file.Name())); err != nil {
+				return err
+			}
+		}
+		if len(f.DarwinSha256) == 0 && guessOs == "darwin" {
+			if f.DarwinSha256, err = hash(filepath.Join(path, file.Name())); err != nil {
+				return err
+			}
+		}
 	}
 
 	return fmt.Errorf("not found any binary archive")
@@ -93,30 +106,43 @@ func isSupportedArchive(source string) bool {
 	return false
 }
 
-func guess(file string) (*Formula, error) {
-	var name = truncateExtension(file)
-	chunks := strings.Split(name, "-")
+func hash(file string) (checksum string, err error) {
+	f, err := os.Open(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	hasher := sha256.New()
+	if _, err = io.Copy(hasher, f); err != nil {
+		return
+	}
+	return hex.EncodeToString(hasher.Sum(nil)), nil
+}
+
+func guess(file string) (os, name, version string, err error) {
+	var fileName = truncateExtension(file)
+	chunks := strings.Split(fileName, "-")
 	if len(chunks) == 1 {
 		if chunks = strings.Split(file, "_"); len(chunks) == 1 {
-			return nil, fmt.Errorf("%s does not contains any dash or underline, consider it not a binary archive", file)
+			err = fmt.Errorf("%s does not contains any dash or underline, consider it not a binary archive", file)
+			return
 		}
 	}
-	f := &Formula{}
-
 	for _, chunk := range chunks {
 		if _, err := semver.NewVersion(chunk); err == nil {
-			f.Version = chunk
+			version = chunk
 			continue
 		}
 		if containsIgnoreCase(goarch64bit, chunk) {
 			continue
 		}
 		if containsIgnoreCase(goos, chunk) {
+			os = chunk
 			continue
 		}
-		f.Name = chunk
+		name = chunk
 	}
-	return f, nil
+	return
 }
 
 func containsIgnoreCase(ss []string, s string) bool {

@@ -16,10 +16,13 @@ const (
 )
 
 var (
-	author        = "softleader/homebrew-tap/brew-tapper"
-	mail          = "supprt@softleader.com.tw"
-	msg           = "version upgrade by brew-tapper bot"
-	versionRegexp = regexp.MustCompile("(version )(.+)")
+	author             = "softleader/homebrew-tap/brew-tapper"
+	mail               = "supprt@softleader.com.tw"
+	msg                = "version upgrade by brew-tapper bot"
+	versionRegexp      = regexp.MustCompile(`(version\s)(.+)`)
+	sha256Regexp       = regexp.MustCompile(`(sha256\s)(.+)`)
+	darwinSha256Regexp = regexp.MustCompile(`(OS\.mac[\s|\S]+sha256\s)[\S|\s]+elsif`)
+	linuxSha256Regexp  = regexp.MustCompile(`(OS\.linux[\s|\S]+sha256\s)[\S|\s]+end`)
 )
 
 func (f *Formula) Upgrade(token string, repo *gh.Repo) error {
@@ -64,6 +67,12 @@ func newTokenClient(ctx context.Context, token string) *github.Client {
 func format(origin string, f *Formula) (out string) {
 	logrus.Debugf("formatting formula:\n%s", origin)
 	out = versionRegexp.ReplaceAllString(origin, fmt.Sprintf("$1%q", f.Version))
+	out = darwinSha256Regexp.ReplaceAllStringFunc(out, func(s string) string {
+		return sha256Regexp.ReplaceAllString(s, fmt.Sprintf("$1%q", f.DarwinSha256))
+	})
+	out = linuxSha256Regexp.ReplaceAllStringFunc(out, func(s string) string {
+		return sha256Regexp.ReplaceAllString(s, fmt.Sprintf("$1%q", f.LinuxSha256))
+	})
 	logrus.Debugf("version replaced:\n%s", out)
 	return
 }
