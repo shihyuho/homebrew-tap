@@ -11,6 +11,8 @@ build:
 .PHONY: dist
 dist:
 	mkdir -p $(DIST)
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(BUILD)/tapper -a -tags netgo ./cmd/tapper
+	tar -C $(BUILD) -zcvf $(DIST)/tapper.tgz tapper
 	cp Dockerfile $(DIST)
 	cp -r script $(DIST)
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(DIST)/tapper-server -a -tags netgo ./cmd/tapper-server
