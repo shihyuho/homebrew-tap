@@ -94,7 +94,7 @@ func (f *Formula) Guess(path string) error {
 		}
 	}
 
-	return fmt.Errorf("not found any binary archive")
+	return fmt.Errorf("not found any binary archive in %q", path)
 }
 
 func isSupportedArchive(source string) bool {
