@@ -67,6 +67,9 @@ func (f *Formula) Guess(path string) error {
 	if err != nil {
 		return err
 	}
+	if len(files) == 0 {
+		return fmt.Errorf("not found any binary archive in %q", path)
+	}
 	for _, file := range files {
 		if file.IsDir() || !isSupportedArchive(file.Name()) {
 			continue
@@ -93,8 +96,7 @@ func (f *Formula) Guess(path string) error {
 			}
 		}
 	}
-
-	return fmt.Errorf("not found any binary archive in %q", path)
+	return nil
 }
 
 func isSupportedArchive(source string) bool {
