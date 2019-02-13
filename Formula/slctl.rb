@@ -5,10 +5,10 @@ class Slctl < Formula
   
   if OS.mac?
     url "https://github.com/softleader/slctl/releases/download/#{version}/slctl-darwin-#{version}.tgz"
-    sha256 "64b0ba0d66b20ba0b12d83fdf37e41e337f6f96de7d7b9e32c9989210322dd7a"
+    sha256 "e5ba1aaa4d483419718fcc02a022a7df3f205c8a0da677bb3de1d902a0c552bc"
   elsif OS.linux?
     url "https://github.com/softleader/slctl/releases/download/#{version}/slctl-linux-#{version}.tgz"
-    sha256 "e8952aed3317965262d9e0de7acbac262add9c3f9e1718a3c5410dbd9ba4c5fe"
+    sha256 "2130995d01d5dd760ea920e4189227e33b7daf0b6c6f165ce8acb121e1ce323d"
   end
 
   depends_on :arch => :x86_64
