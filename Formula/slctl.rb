@@ -1,14 +1,14 @@
 class Slctl < Formula
   desc "Slctl is a command line interface for running commands against SoftLeader Services"
   homepage "https://github.com/softleader/slctl"
-  version "3.6.1"
+  version "3.7.0"
   
   if OS.mac?
     url "https://github.com/softleader/slctl/releases/download/#{version}/slctl-darwin-#{version}.tgz"
-    sha256 "18e18e164f87b8c4edb72ce487724d249e1353986fd32763667e4e4880892b49"
+    sha256 "8aa75fcb8e7278d3d015215249c8c39532cd66cc048d44848f52f8b9746753b0"
   elsif OS.linux?
     url "https://github.com/softleader/slctl/releases/download/#{version}/slctl-linux-#{version}.tgz"
-    sha256 "7d9ade23135cc03b10e1b2b7839120c0f83d3e63cbf48f0b5878336c5f8c8884"
+    sha256 "e3fadcf303ac7e8eafaf6527266ba445806c40a42ca6704f8f47b7a46abd643d"
   end
 
   depends_on :arch => :x86_64
