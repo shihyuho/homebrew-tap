@@ -1,6 +1,6 @@
 cask "berth" do
-  version "1.2.0"
-  sha256 "306e4cff9a23af1ef81c7bb604a998f69bac806b9393f50afccbe8ce7776303c"
+  version "1.2.1"
+  sha256 "2add4dc78eb322de20c56c3bd8c794225fab80bf51edac14c0bf0cbd6789fa84"
 
   url "https://github.com/shihyuho/berth/releases/download/#{version}/Berth-arm64.zip"
   name "Berth"
